@@ -1,4 +1,5 @@
 import random
+import math
 
 # data and hypothesis globals
 ELEMENT_COUNT = 500
@@ -83,6 +84,15 @@ def partB():
 def noiseDistribution(dataVector):
     return random.uniform(-4, 4) + sum(dataVector)
 
+# calculats the log-likelihood of the given weight vector theta
+def logLikelihood(data, labels, theta):
+    sum = 0
+    for i in range(len(data)):
+        htheta = h(theta, data[i])
+        # TODO: getting negative number for log
+        sum += labels[i] * math.log(htheta) + (1 - labels[i]) * math.log(1 - htheta)
+    return sum
+
 # noisy labels
 def partC():
     global trainingSet
@@ -118,8 +128,12 @@ def partC():
             wAvg2[j] += weights[i][j]
         wAvg2[j] = wAvg[j]/(len(weights)/2)
 
+    print('final weight vector', weights[len(weights)-1])
     print('total average', wAvg)
     print('second epoch average', wAvg2)
+    print('likelihood fwv', logLikelihood(trainingSet, trainingLabels, weights[len(weights)-1]))
+    print('likelihood ta', logLikelihood(trainingSet, trainingLabels, wAvg))
+    print('likelihood ea', logLikelihood(trainingSet, trainingLabels, wAvg2))
 
 
 ###############
