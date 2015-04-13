@@ -21,12 +21,12 @@ def init():
             trainingSet[n].append(1 if random.randint(0,1) == 1 else -1)
             testSet[n].append(1 if random.randint(0,1) == 1 else -1)
 
-# hypothesis function
+# hypothesis function for logistic regression
 def h(theta, dataVector):
-    sum = 0
+    dot = 0
     for i in range(WEIGHT_COUNT):
-        sum += theta[i] * dataVector[i]
-    return sum
+        dot += theta[i] * dataVector[i]
+    return 1/(1 + math.exp(-dot))
 
 # Stochastic Gradient Descent
 def sgd(data, labels, theta, alpha = 0.1, track = False, epochs = 1):
