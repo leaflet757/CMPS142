@@ -6,6 +6,8 @@ ELEMENT_COUNT = 500
 WEIGHT_COUNT = 11
 trainingSet = []
 testSet = []
+trainingLabels = []
+testLabels = []
 theta = []
 
 # Data and hypothesis Initialization
@@ -31,9 +33,10 @@ def h(theta, dataVector):
 # Stochastic Gradient Descent
 # returns number of epochs and prediction errors in track is false
 # returns list of weight vectors if track is true
-def sgd(testData, testLabels, theta, alpha = 0.1, track = False, epochs = 1):
+def sgd(data, labels, theta, alpha = 0.1, track = False, epochs = 1):
     if not track:
         global testSet
+        global testLabels
         running = True
         errCount = 0
         epochCount = 0
@@ -42,12 +45,10 @@ def sgd(testData, testLabels, theta, alpha = 0.1, track = False, epochs = 1):
             epochCount += 1
             for i in range(ELEMENT_COUNT):
                 for j in range(WEIGHT_COUNT):
-                    theta[j] = theta[j] + alpha * (testLabels[i] - h(theta, testData[i])) * testData[i][j]
+                    theta[j] = theta[j] + alpha * (labels[i] - h(theta, data[i])) * data[i][j]
             # epoch end, try test set
             running = False
             for i in range(ELEMENT_COUNT):
-                print(round(h(theta, testSet[i])), testLabels[i])
-                if round(h(theta, testSet[i])) != testLabels[i]:
                     errCount += 1
                     running = True
         return (epochCount, errCount)
@@ -57,7 +58,7 @@ def sgd(testData, testLabels, theta, alpha = 0.1, track = False, epochs = 1):
             for i in range(ELEMENT_COUNT):
                 weights.append(list(theta))
                 for j in range(WEIGHT_COUNT):
-                    theta[j] = theta[j] + alpha * (testLabels[i] - h(theta, testData[i])) * testData[i][j]
+                    theta[j] = theta[j] + alpha * (labels[i] - h(theta, data[i])) * data[i][j]
         return weights
 
 # used for partC to initialize labels
@@ -78,6 +79,8 @@ def partA():
     global trainingSet
     global testSet
     global theta
+    global trainingLabels
+    global testLabels
 
     trainingLabels = []
     testLabels = []
@@ -98,6 +101,8 @@ def partB():
     global trainingSet
     global testSet
     global theta
+    global trainingLabels
+    global testLabels
 
     trainingLabels = []
     testLabels = []
