@@ -29,16 +29,49 @@ def h(theta, dataVector):
     return 1/(1 + math.exp(-dot))
 
 # Stochastic Gradient Descent
-def sgd(data, labels, theta, alpha = 0.1, track = False, epochs = 1):
-    weights = []
-    y = 1
-    for e in range(epochs):
-        for i in range(ELEMENT_COUNT):
-            weights.append(list(theta))
-            for j in range(WEIGHT_COUNT):
-                theta[j] = theta[j] + alpha * (labels[i] - h(theta, data[i])) * data[i][j]
-    if track:
+# returns number of epochs and prediction errors in track is false
+# returns list of weight vectors if track is true
+def sgd(testData, testLabels, theta, alpha = 0.1, track = False, epochs = 1):
+    if not track:
+        global testSet
+        running = True
+        errCount = 0
+        epochCount = 0
+        while running:
+            # epoch start
+            epochCount += 1
+            for i in range(ELEMENT_COUNT):
+                for j in range(WEIGHT_COUNT):
+                    theta[j] = theta[j] + alpha * (testLabels[i] - h(theta, testData[i])) * testData[i][j]
+            # epoch end, try test set
+            running = False
+            for i in range(ELEMENT_COUNT):
+                print(round(h(theta, testSet[i])), testLabels[i])
+                if round(h(theta, testSet[i])) != testLabels[i]:
+                    errCount += 1
+                    running = True
+        return (epochCount, errCount)
+    else:
+        weights = []
+        for e in range(epochs):
+            for i in range(ELEMENT_COUNT):
+                weights.append(list(theta))
+                for j in range(WEIGHT_COUNT):
+                    theta[j] = theta[j] + alpha * (testLabels[i] - h(theta, testData[i])) * testData[i][j]
         return weights
+
+# used for partC to initialize labels
+def noiseDistribution(dataVector):
+    return random.uniform(-4, 4) + sum(dataVector)
+
+# calculats the log-likelihood of the given weight vector theta
+def logLikelihood(data, labels, theta):
+    sum = 0
+    for i in range(len(data)):
+        htheta = h(theta, data[i])
+        # TODO: getting negative number for log
+        sum += labels[i] * math.log(htheta) + (1 - labels[i]) * math.log(1 - htheta)
+    return sum
 
 # first component labels
 def partA():
@@ -56,8 +89,9 @@ def partA():
         testLabels.append(1 if testSet[n][0] == 1 else 0)
 
     print ('start', theta)
-    sgd(trainingSet, trainingLabels, theta)
+    counts = sgd(trainingSet, trainingLabels, theta)
     print ('end', theta)
+    print ('epoch count', counts[0], 'err count', counts[1])
 
 # half feature labels
 def partB():
@@ -77,21 +111,9 @@ def partB():
         testLabels.append(1 if t2 >= 0 else 0)
 
     print ('start', theta)
-    sgd(trainingSet, trainingLabels, theta)
+    counts = sgd(trainingSet, trainingLabels, theta)
     print ('end', theta)
-
-# used for partC to initialize labels
-def noiseDistribution(dataVector):
-    return random.uniform(-4, 4) + sum(dataVector)
-
-# calculats the log-likelihood of the given weight vector theta
-def logLikelihood(data, labels, theta):
-    sum = 0
-    for i in range(len(data)):
-        htheta = h(theta, data[i])
-        # TODO: getting negative number for log
-        sum += labels[i] * math.log(htheta) + (1 - labels[i]) * math.log(1 - htheta)
-    return sum
+    print ('epoch count', counts[0], 'err count', counts[1])
 
 # noisy labels
 def partC():
@@ -140,6 +162,6 @@ def partC():
 # PROGRAM START
 ###############
 init()
-#partA()
+partA()
 #partB()
-partC()
+#partC()
