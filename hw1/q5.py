@@ -49,6 +49,7 @@ def sgd(data, labels, theta, alpha = 0.1, track = False, epochs = 1):
             # epoch end, try test set
             running = False
             for i in range(ELEMENT_COUNT):
+                if round(h(theta, testSet[i]) * 100) / 100 != testLabels[i]:
                     errCount += 1
                     running = True
         return (epochCount, errCount)
