@@ -168,6 +168,6 @@ def partC():
 # PROGRAM START
 ###############
 init()
-partA()
+#partA()
 #partB()
-#partC()
+partC()
